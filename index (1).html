@@ -1,0 +1,834 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Total aprox · privado</title>
+  <style>
+    :root{
+      --bg1:#0b1220; --bg2:#081628;
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.66);
+      --stroke: rgba(255,255,255,.14);
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --radius: 22px;
+    }
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 700px at 20% 10%, rgba(0,160,255,.35), transparent 60%),
+        radial-gradient(1000px 700px at 90% 30%, rgba(120,80,255,.30), transparent 55%),
+        radial-gradient(900px 700px at 50% 90%, rgba(0,255,200,.16), transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      padding: env(safe-area-inset-top) 14px env(safe-area-inset-bottom);
+    }
+    .wrap{ max-width: 780px; margin: 12px auto 26px; }
+    .header{ display:flex; justify-content:space-between; gap:12px; padding: 0 2px; margin-bottom: 10px; align-items:flex-start; }
+    .title{ font-size: 18px; font-weight: 760; margin:0; letter-spacing:.2px; }
+    .subtitle{ margin:6px 0 0; font-size: 12px; color: var(--muted); line-height:1.35; }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 10px 12px; border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      backdrop-filter: blur(16px) saturate(170%);
+      -webkit-backdrop-filter: blur(16px) saturate(170%);
+      box-shadow: 0 10px 30px rgba(0,0,0,.22);
+      font-size: 12px; color: var(--muted); white-space: nowrap;
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px) saturate(180%);
+      -webkit-backdrop-filter: blur(18px) saturate(180%);
+      overflow:hidden;
+    }
+    .card-inner{ padding: 12px; }
+    .grid{ display:grid; grid-template-columns: 1fr; gap: 10px; }
+    @media (min-width: 720px){ .grid.two{ grid-template-columns: 1fr 1fr; } }
+
+    .field{
+      border-radius: 18px;
+      background: rgba(0,0,0,.18);
+      border: 1px solid rgba(255,255,255,.10);
+      padding: 10px 12px;
+    }
+    label{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      font-size: 12px; color: var(--muted); margin-bottom: 8px;
+    }
+    .tag{
+      font-size: 11px; color: rgba(255,255,255,.60);
+      padding: 4px 8px; border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+    }
+    input, textarea{
+      width: 100%;
+      border: 0;
+      outline: none;
+      padding: 12px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 650;
+      letter-spacing: .2px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+    }
+    input[type="number"]{ font-size: 18px; }
+    input::placeholder, textarea::placeholder{ color: rgba(255,255,255,.35); }
+    input:focus, textarea:focus{
+      outline: 2px solid rgba(140,200,255,.35);
+      outline-offset: 2px;
+      background: rgba(255,255,255,.08);
+    }
+
+    .total{
+      padding: 18px 14px;
+      border-top: 1px solid rgba(255,255,255,.10);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.04));
+      text-align:center;
+    }
+    .total .k{ font-size: 12px; color: var(--muted); letter-spacing: .6px; text-transform: uppercase; }
+    .total .v{ margin-top: 8px; font-size: 42px; font-weight: 800; line-height: 1.05; }
+    @media (max-width: 420px){ .total .v{ font-size: 38px; } }
+
+    .row{ display:flex; gap:10px; flex-wrap: wrap; align-items:center; justify-content: space-between; padding: 10px 12px 12px; }
+    .btn{
+      appearance:none;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing:.2px;
+      backdrop-filter: blur(16px) saturate(170%);
+      -webkit-backdrop-filter: blur(16px) saturate(170%);
+      box-shadow: 0 14px 40px rgba(0,0,0,.28);
+      cursor:pointer;
+    }
+    .btn:active{ transform: translateY(1px); }
+    .btn.secondary{ background: rgba(255,255,255,.06); }
+    .btn.danger{ background: rgba(255,80,80,.10); border-color: rgba(255,80,80,.20); }
+
+    .mini{ color: var(--muted); font-size: 12px; line-height: 1.35; }
+    details{ border-top: 1px solid rgba(255,255,255,.10); }
+    summary{ list-style:none; cursor:pointer; padding: 12px; color: var(--text); font-weight: 750; }
+    summary::-webkit-details-marker{ display:none; }
+    .hist{ padding: 0 12px 12px; }
+    .list{ display:grid; gap: 10px; }
+    .item{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      border-radius: 18px;
+      padding: 12px;
+      display:grid;
+      gap: 8px;
+    }
+    .item-top{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+    .muted{ color: var(--muted); }
+    .split{ display:flex; gap:10px; flex-wrap:wrap; }
+    .chip{
+      padding: 6px 10px; border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      font-size: 12px; color: var(--muted);
+    }
+
+    /* Modal */
+    .modal{
+      position: fixed; inset: 0;
+      display:none;
+      align-items:center; justify-content:center;
+      padding: 18px;
+      background: rgba(0,0,0,.45);
+      backdrop-filter: blur(10px) saturate(140%);
+      -webkit-backdrop-filter: blur(10px) saturate(140%);
+    }
+    .modal.show{ display:flex; }
+    .modal-card{
+      width: min(560px, 100%);
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
+      border: 1px solid rgba(255,255,255,.16);
+      box-shadow: 0 22px 80px rgba(0,0,0,.55);
+      overflow:hidden;
+    }
+    .modal-body{ padding: 14px; }
+    .modal-title{ margin: 0 0 8px; font-weight: 820; letter-spacing:.2px; }
+    .modal-actions{ display:flex; gap:10px; justify-content:flex-end; padding: 12px 14px 14px; border-top:1px solid rgba(255,255,255,.10); }
+    .sep{ height:1px; background: rgba(255,255,255,.10); margin: 10px 0; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div>
+        <h1 class="title">Total aprox · privado</h1>
+        <p class="subtitle">Guarda funciones con fecha (cifrado con contraseña). Totales del mes + calibración por totales del mes.</p>
+      </div>
+      <div class="pill" id="avgInfo">Promedios: —</div>
+    </div>
+
+    <div class="card">
+      <div class="card-inner">
+        <div class="grid two">
+          <div class="field">
+            <label for="fecha"><span>Fecha de la función</span><span class="tag">obligatoria</span></label>
+            <input id="fecha" type="date" />
+          </div>
+          <div class="field">
+            <label for="miPct"><span>Mi %</span><span class="tag">default 50</span></label>
+            <input id="miPct" type="number" min="0" max="100" step="0.01" value="50" inputmode="decimal" />
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="field">
+            <label for="a"><span>Atrápalo — entradas</span><span class="tag">entero</span></label>
+            <input id="a" type="number" min="0" step="1" value="0" inputmode="numeric" placeholder="0" />
+          </div>
+
+          <div class="field">
+            <label for="k"><span>Kultur — entradas</span><span class="tag">decimal</span></label>
+            <input id="k" type="text" value="0" inputmode="decimal" placeholder="0 ó 5,40" />
+          </div>
+
+          <div class="field">
+            <label for="b"><span>Abono teatro — entradas</span><span class="tag">entero</span></label>
+            <input id="b" type="number" min="0" step="1" value="0" inputmode="numeric" placeholder="0" />
+          </div>
+        </div>
+      </div>
+
+      <div class="total">
+        <div class="k">Tu total aprox (con Mi % aplicado)</div>
+        <div class="v mono" id="total">0,00 €</div>
+      </div>
+
+      <div class="row">
+        <button class="btn" id="save">Guardar función</button>
+        <button class="btn secondary" id="clear">Poner todo en 0</button>
+        <button class="btn secondary" id="copy">Copiar total</button>
+        <span class="mini" id="status">Bloqueado</span>
+      </div>
+
+      <details>
+        <summary>Totales del mes + Calibrar promedios</summary>
+        <div class="hist">
+
+          <!-- Totales del mes -->
+          <div class="field">
+            <label for="mes"><span>Totales del mes</span><span class="tag">suma historial</span></label>
+            <div class="grid two">
+              <input id="mes" type="month" />
+              <input class="mono" id="mesResumen" disabled value="—" />
+            </div>
+            <div class="mini muted" style="margin-top:8px" id="mesDetalle">—</div>
+          </div>
+
+          <div class="sep"></div>
+
+          <!-- Calibrar -->
+          <div class="field">
+            <label><span>Calibrar promedios (pegá totales del mes)</span><span class="tag">opcional</span></label>
+            <textarea id="calibText" rows="5" style="resize:vertical; font-weight:650"
+              placeholder="Ej:
+Atrapalo: entradas=173 monto=2076 comisiones=192
+Kultur: entradas=63 monto=473 comisiones=61.49
+Abono: entradas=252 monto=759.99"></textarea>
+
+            <div class="row" style="padding:10px 0 0; justify-content:flex-end;">
+              <button class="btn secondary" id="calibPreview">Ver cambios</button>
+              <button class="btn" id="calibApply">Aplicar calibración</button>
+            </div>
+
+            <div class="mini muted" id="calibOut" style="margin-top:8px;">—</div>
+          </div>
+
+        </div>
+      </details>
+
+      <details>
+        <summary>Historial (privado)</summary>
+        <div class="hist">
+          <div class="mini muted" style="margin-bottom:10px;">
+            Tip: exportá un backup cifrado antes de cambiar de compu.
+          </div>
+
+          <div class="row" style="padding:0 0 10px;">
+            <button class="btn secondary" id="export">Exportar backup</button>
+            <button class="btn secondary" id="importBtn">Importar backup</button>
+            <button class="btn danger" id="wipe">Borrar TODO</button>
+          </div>
+
+          <div class="list" id="list"></div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- Modal contraseña -->
+  <div class="modal" id="modal">
+    <div class="modal-card">
+      <div class="modal-body">
+        <h2 class="modal-title">Desbloquear</h2>
+        <p class="mini muted" style="margin:0 0 10px;">
+          Ingresa tu contraseña para acceder al historial cifrado.
+        </p>
+        <div class="field" style="padding:10px 12px;">
+          <label for="pwd"><span>Contraseña</span><span class="tag">no se recupera</span></label>
+          <input id="pwd" type="password" placeholder="••••••••" />
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn secondary" id="cancel">Cancelar</button>
+        <button class="btn" id="unlock">Entrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal import -->
+  <div class="modal" id="modalImport">
+    <div class="modal-card">
+      <div class="modal-body">
+        <h2 class="modal-title">Importar backup</h2>
+        <p class="mini muted" style="margin:0 0 10px;">
+          Pegá acá el JSON exportado (cifrado). Se importará en este navegador.
+        </p>
+        <div class="field" style="padding:10px 12px;">
+          <label><span>Contenido</span><span class="tag">JSON</span></label>
+          <textarea id="importText" rows="6" style="resize:vertical; font-weight:650;"></textarea>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn secondary" id="importCancel">Cancelar</button>
+        <button class="btn" id="importDo">Importar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ========= Defaults (si NO calibras) =========
+    const DEFAULTS = {
+      prices: {
+        atrapalo: 12.00,
+        kultur: 9.00,
+        abono: 801.82 / 266
+      },
+      // Interno: IVA incluido + comisiones (Abono 0%)
+      config: {
+        atrapalo: { ivaTipo: 10, comPct: 0.0924 },
+        kultur:   { ivaTipo: 10, comPct: 0.13   },
+        abono:    { ivaTipo: 0,  comPct: 0.0    }
+      }
+    };
+
+    // ========= UI helpers =========
+    const $ = (id) => document.getElementById(id);
+    const fmtEUR = (n) => new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" }).format(isFinite(n) ? n : 0);
+    const todayISO = () => new Date().toISOString().slice(0,10);
+    const monthISO = () => new Date().toISOString().slice(0,7);
+
+    function numFromTextValue(v) {
+      const raw = String(v ?? "").trim().replace(/\s+/g, "");
+      if (!raw) return 0;
+      const normalized = raw.replace(",", ".");
+      const x = parseFloat(normalized);
+      return Number.isFinite(x) ? x : 0;
+    }
+    function numFromTextEl(el) { return numFromTextValue(el.value); }
+    function clampNonNeg(x){ return Math.max(0, x); }
+
+    function ivaIncluido(bruto, ivaTipo) {
+      if (ivaTipo <= 0) return 0;
+      return bruto * (ivaTipo / (100 + ivaTipo));
+    }
+    function miGananciaConIvaYComision(entradas, precio, ivaTipo, comPct, miPct) {
+      const bruto = entradas * precio;
+      const iva = ivaIncluido(bruto, ivaTipo);
+      const com = bruto * comPct;
+      const neto = bruto - iva - com;
+      return neto * miPct;
+    }
+
+    // ========= Crypto (AES-GCM + PBKDF2) =========
+    const STORE_KEY = "private_shows_v2";
+    const enc = new TextEncoder();
+    const dec = new TextDecoder();
+
+    function b64(bytes) {
+      let bin = "";
+      bytes.forEach(b => bin += String.fromCharCode(b));
+      return btoa(bin);
+    }
+    function unb64(str) {
+      const bin = atob(str);
+      const bytes = new Uint8Array(bin.length);
+      for (let i=0;i<bin.length;i++) bytes[i] = bin.charCodeAt(i);
+      return bytes;
+    }
+
+    async function deriveKey(password, saltBytes) {
+      const keyMaterial = await crypto.subtle.importKey(
+        "raw", enc.encode(password), "PBKDF2", false, ["deriveKey"]
+      );
+      return crypto.subtle.deriveKey(
+        { name: "PBKDF2", salt: saltBytes, iterations: 150000, hash: "SHA-256" },
+        keyMaterial,
+        { name: "AES-GCM", length: 256 },
+        false,
+        ["encrypt", "decrypt"]
+      );
+    }
+
+    async function encryptJSON(password, obj) {
+      const salt = crypto.getRandomValues(new Uint8Array(16));
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const key = await deriveKey(password, salt);
+      const plaintext = enc.encode(JSON.stringify(obj));
+      const ciphertext = new Uint8Array(await crypto.subtle.encrypt({ name:"AES-GCM", iv }, key, plaintext));
+      return { v:2, salt: b64(salt), iv: b64(iv), data: b64(ciphertext) };
+    }
+
+    async function decryptJSON(password, payload) {
+      const salt = unb64(payload.salt);
+      const iv = unb64(payload.iv);
+      const data = unb64(payload.data);
+      const key = await deriveKey(password, salt);
+      const plaintext = await crypto.subtle.decrypt({ name:"AES-GCM", iv }, key, data);
+      return JSON.parse(dec.decode(new Uint8Array(plaintext)));
+    }
+
+    // ========= App state =========
+    let unlocked = false;
+    let masterPassword = null;
+
+    // db.settings: { prices, config }
+    let db = { items: [], settings: null };
+
+    function effectiveSettings(){
+      const s = db.settings || {};
+      const prices = s.prices || DEFAULTS.prices;
+      const config = s.config || DEFAULTS.config;
+      return { prices, config };
+    }
+
+    function setStatus(msg){ $("status").textContent = msg; }
+
+    async function persist() {
+      if (!masterPassword) throw new Error("No password");
+      const payload = await encryptJSON(masterPassword, db);
+      localStorage.setItem(STORE_KEY, JSON.stringify(payload));
+    }
+
+    async function loadWithPassword(pwd) {
+      const raw = localStorage.getItem(STORE_KEY);
+      if (!raw) {
+        db = { items: [], settings: null };
+        masterPassword = pwd;
+        unlocked = true;
+        await persist();
+        return;
+      }
+      const payload = JSON.parse(raw);
+      db = await decryptJSON(pwd, payload);
+      // upgrade guard
+      if (!db.items) db.items = [];
+      if (!("settings" in db)) db.settings = null;
+      masterPassword = pwd;
+      unlocked = true;
+    }
+
+    function updateAvgPill(){
+      const { prices, config } = effectiveSettings();
+      $("avgInfo").textContent = `Promedios: A ${prices.atrapalo.toFixed(2)}€ · K ${prices.kultur.toFixed(2)}€ · B ${prices.abono.toFixed(2)}€ · Com A ${(config.atrapalo.comPct*100).toFixed(2)}% · Com K ${(config.kultur.comPct*100).toFixed(2)}%`;
+    }
+
+    function calc() {
+      const { prices, config } = effectiveSettings();
+
+      const miPct = clampNonNeg(parseFloat($("miPct").value || "50")) / 100;
+
+      const a = Math.floor(clampNonNeg(parseFloat($("a").value || "0"))); $("a").value = a;
+      const b = Math.floor(clampNonNeg(parseFloat($("b").value || "0"))); $("b").value = b;
+      const k = clampNonNeg(numFromTextEl($("k")));
+
+      const ta = miGananciaConIvaYComision(a, prices.atrapalo, config.atrapalo.ivaTipo, config.atrapalo.comPct, miPct);
+      const tk = miGananciaConIvaYComision(k, prices.kultur,   config.kultur.ivaTipo,   config.kultur.comPct,   miPct);
+      const tb = (b * prices.abono) * miPct; // Abono: promedio + mi%
+
+      $("total").textContent = fmtEUR(ta + tk + tb);
+
+      updateAvgPill();
+      updateMonthTotals();
+    }
+
+    function renderList() {
+      const el = $("list");
+      el.innerHTML = "";
+      const items = [...db.items].sort((x,y) => (y.date||"").localeCompare(x.date||""));
+      if (items.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "mini muted";
+        empty.textContent = "Sin funciones guardadas todavía.";
+        el.appendChild(empty);
+        return;
+      }
+
+      for (const it of items) {
+        const item = document.createElement("div");
+        item.className = "item";
+
+        const top = document.createElement("div");
+        top.className = "item-top";
+
+        const left = document.createElement("div");
+        left.innerHTML = `<div style="font-weight:800">${it.date || "Sin fecha"}</div>
+                          <div class="mini muted mono">A:${it.a} · K:${it.k} · B:${it.b} · Mi%:${it.miPct}</div>`;
+
+        const right = document.createElement("div");
+        right.innerHTML = `<div class="mono" style="font-weight:900; font-size:18px">${fmtEUR(it.total)}</div>`;
+
+        top.appendChild(left);
+        top.appendChild(right);
+
+        const chips = document.createElement("div");
+        chips.className = "split";
+        chips.innerHTML = `
+          <span class="chip">Atrápalo ${it.a}</span>
+          <span class="chip">Kultur ${it.k}</span>
+          <span class="chip">Abono ${it.b}</span>
+        `;
+
+        const actions = document.createElement("div");
+        actions.className = "row";
+        actions.style.padding = "0";
+        actions.style.justifyContent = "flex-end";
+
+        const del = document.createElement("button");
+        del.className = "btn danger";
+        del.textContent = "Borrar";
+        del.onclick = async () => {
+          if (!confirm("¿Borrar esta función?")) return;
+          db.items = db.items.filter(x => x.id !== it.id);
+          await persist();
+          renderList();
+          updateMonthTotals();
+        };
+
+        actions.appendChild(del);
+
+        item.appendChild(top);
+        item.appendChild(chips);
+        item.appendChild(actions);
+        el.appendChild(item);
+      }
+    }
+
+    // ========= Totales del mes =========
+    function updateMonthTotals(){
+      const ym = $("mes").value;
+      if (!ym) { $("mesResumen").value = "—"; $("mesDetalle").textContent = "—"; return; }
+      const items = db.items.filter(it => (it.date || "").startsWith(ym));
+      const sum = items.reduce((acc, it) => acc + (Number(it.total) || 0), 0);
+      const n = items.length;
+      const prom = n ? (sum / n) : 0;
+      const a = items.reduce((acc, it) => acc + (Number(it.a) || 0), 0);
+      const k = items.reduce((acc, it) => acc + (Number(it.k) || 0), 0);
+      const b = items.reduce((acc, it) => acc + (Number(it.b) || 0), 0);
+
+      $("mesResumen").value = `${fmtEUR(sum)} · ${n} func.`;
+      $("mesDetalle").textContent = `Promedio por función: ${fmtEUR(prom)} · Entradas (A:${a} · K:${k.toFixed(2)} · B:${b})`;
+    }
+
+    // ========= Calibrar promedios (pegar totales del mes) =========
+    function parseCalib(text){
+      const out = {
+        atrapalo: { entradas:null, monto:null, comisiones:null },
+        kultur:   { entradas:null, monto:null, comisiones:null },
+        abono:    { entradas:null, monto:null, comisiones:null }
+      };
+
+      const norm = (text || "").split(/\n+/).map(l => l.trim()).filter(Boolean);
+
+      const pickPlatform = (line) => {
+        const l = line.toLowerCase();
+        if (l.includes("atrap")) return "atrapalo";
+        if (l.includes("kultur")) return "kultur";
+        if (l.includes("abono")) return "abono";
+        return null;
+      };
+
+      const grab = (line, keyWords) => {
+        // busca "key=123" o "key:123" o "key 123"
+        const l = line.toLowerCase();
+        for (const kw of keyWords) {
+          const r1 = new RegExp(`${kw}\\s*[:=]\\s*([-0-9.,]+)`, "i");
+          const m1 = l.match(r1);
+          if (m1) return numFromTextValue(m1[1]);
+
+          const r2 = new RegExp(`${kw}\\s+([-0-9.,]+)`, "i");
+          const m2 = l.match(r2);
+          if (m2) return numFromTextValue(m2[1]);
+        }
+        return null;
+      };
+
+      for (const line of norm) {
+        const p = pickPlatform(line);
+        if (!p) continue;
+
+        const e = grab(line, ["entradas", "entrada", "tickets"]);
+        const m = grab(line, ["monto", "importe", "total"]);
+        const c = grab(line, ["comisiones", "comision", "fee"]);
+
+        if (e !== null) out[p].entradas = e;
+        if (m !== null) out[p].monto = m;
+        if (c !== null) out[p].comisiones = c;
+      }
+
+      return out;
+    }
+
+    function previewCalibration(){
+      const parsed = parseCalib($("calibText").value);
+
+      const msgs = [];
+      const current = effectiveSettings();
+
+      const calcPrice = (p) => {
+        if (p.entradas && p.monto && p.entradas > 0) return p.monto / p.entradas;
+        return null;
+      };
+      const calcComPct = (p) => {
+        if (p.comisiones != null && p.monto && p.monto > 0) return p.comisiones / p.monto;
+        return null;
+      };
+
+      const pA = calcPrice(parsed.atrapalo);
+      const pK = calcPrice(parsed.kultur);
+      const pB = calcPrice(parsed.abono);
+      const cA = calcComPct(parsed.atrapalo);
+      const cK = calcComPct(parsed.kultur);
+
+      if (pA != null) msgs.push(`Atrápalo precio: ${current.prices.atrapalo.toFixed(2)}€ → ${pA.toFixed(2)}€`);
+      if (cA != null) msgs.push(`Atrápalo comisión: ${(current.config.atrapalo.comPct*100).toFixed(2)}% → ${(cA*100).toFixed(2)}%`);
+
+      if (pK != null) msgs.push(`Kultur precio: ${current.prices.kultur.toFixed(2)}€ → ${pK.toFixed(2)}€`);
+      if (cK != null) msgs.push(`Kultur comisión: ${(current.config.kultur.comPct*100).toFixed(2)}% → ${(cK*100).toFixed(2)}%`);
+
+      if (pB != null) msgs.push(`Abono precio promedio: ${current.prices.abono.toFixed(2)}€ → ${pB.toFixed(2)}€ (comisión sigue 0%)`);
+
+      if (msgs.length === 0) return "No pude leer nada. Pegá líneas con: plataforma + entradas + monto (+ comisiones opcional).";
+      return msgs.join(" · ");
+    }
+
+    async function applyCalibration(){
+      if (!unlocked) return showModal();
+
+      const parsed = parseCalib($("calibText").value);
+      const { prices, config } = effectiveSettings();
+
+      const nextPrices = { ...prices };
+      const nextConfig = {
+        atrapalo: { ...config.atrapalo },
+        kultur:   { ...config.kultur },
+        abono:    { ...config.abono }
+      };
+
+      const updateFrom = (p, key) => {
+        if (p.entradas != null && p.monto != null && p.entradas > 0) {
+          nextPrices[key] = p.monto / p.entradas;
+        }
+        if ((key === "atrapalo" || key === "kultur") && p.comisiones != null && p.monto != null && p.monto > 0) {
+          nextConfig[key].comPct = p.comisiones / p.monto;
+        }
+        // IVA tipo se mantiene (10% para Atrápalo/Kultur, Abono 0%)
+      };
+
+      updateFrom(parsed.atrapalo, "atrapalo");
+      updateFrom(parsed.kultur, "kultur");
+      updateFrom(parsed.abono, "abono");
+
+      db.settings = { prices: nextPrices, config: nextConfig };
+      await persist();
+
+      $("calibOut").textContent = "Aplicado ✓ (ya estás usando los nuevos promedios).";
+      updateAvgPill();
+      calc();
+      renderList();
+    }
+
+    // ========= Modal logic =========
+    function showModal() { $("modal").classList.add("show"); $("pwd").value = ""; setTimeout(() => $("pwd").focus(), 50); }
+    function hideModal() { $("modal").classList.remove("show"); }
+    function showImport() { $("modalImport").classList.add("show"); $("importText").value = ""; setTimeout(() => $("importText").focus(), 50); }
+    function hideImport() { $("modalImport").classList.remove("show"); }
+
+    // ========= Actions =========
+    $("unlock").addEventListener("click", async () => {
+      const pwd = $("pwd").value || "";
+      if (pwd.length < 4) { alert("Poné una contraseña de al menos 4 caracteres."); return; }
+      try {
+        setStatus("Desbloqueando…");
+        await loadWithPassword(pwd);
+        hideModal();
+        setStatus("Desbloqueado ✓");
+        renderList();
+        updateAvgPill();
+        updateMonthTotals();
+        calc();
+      } catch (e) {
+        console.error(e);
+        setStatus("Bloqueado");
+        alert("Contraseña incorrecta (o datos corruptos).");
+      }
+    });
+    $("cancel").addEventListener("click", () => { hideModal(); });
+
+    $("importBtn").addEventListener("click", () => {
+      if (!unlocked) return showModal();
+      showImport();
+    });
+    $("importCancel").addEventListener("click", hideImport);
+
+    $("importDo").addEventListener("click", async () => {
+      if (!unlocked) return;
+      const text = $("importText").value.trim();
+      if (!text) return;
+      try {
+        const parsed = JSON.parse(text);
+        const imported = await decryptJSON(masterPassword, parsed);
+        if (!imported || !Array.isArray(imported.items)) throw new Error("Formato inválido");
+        db = imported;
+        if (!("settings" in db)) db.settings = null;
+        await persist();
+        hideImport();
+        renderList();
+        updateAvgPill();
+        updateMonthTotals();
+        calc();
+        alert("Importado OK.");
+      } catch (e) {
+        console.error(e);
+        alert("No se pudo importar. ¿JSON inválido o contraseña distinta?");
+      }
+    });
+
+    $("export").addEventListener("click", () => {
+      if (!unlocked) return showModal();
+      const raw = localStorage.getItem(STORE_KEY);
+      if (!raw) return alert("No hay nada para exportar.");
+      navigator.clipboard?.writeText(raw).then(() => {
+        alert("Backup copiado al portapapeles (cifrado). Guardalo en Notas/Drive.");
+      }).catch(() => {
+        prompt("Copiá este texto (cifrado):", raw);
+      });
+    });
+
+    $("wipe").addEventListener("click", async () => {
+      if (!unlocked) return showModal();
+      if (!confirm("Esto borra TODO el historial del navegador. ¿Seguro?")) return;
+      localStorage.removeItem(STORE_KEY);
+      db = { items: [], settings: null };
+      await persist();
+      renderList();
+      updateAvgPill();
+      updateMonthTotals();
+      alert("Borrado.");
+    });
+
+    $("save").addEventListener("click", async () => {
+      if (!unlocked) return showModal();
+
+      const date = $("fecha").value;
+      if (!date) { alert("Elegí la fecha de la función."); return; }
+
+      const { prices, config } = effectiveSettings();
+      const miPct = clampNonNeg(parseFloat($("miPct").value || "50"));
+      const mi = miPct/100;
+
+      const a = Math.floor(clampNonNeg(parseFloat($("a").value || "0")));
+      const b = Math.floor(clampNonNeg(parseFloat($("b").value || "0")));
+      const k = clampNonNeg(numFromTextEl($("k")));
+
+      const ta = miGananciaConIvaYComision(a, prices.atrapalo, config.atrapalo.ivaTipo, config.atrapalo.comPct, mi);
+      const tk = miGananciaConIvaYComision(k, prices.kultur,   config.kultur.ivaTipo,   config.kultur.comPct,   mi);
+      const tb = (b * prices.abono) * mi;
+      const total = ta + tk + tb;
+
+      db.items.push({
+        id: crypto.randomUUID?.() || String(Date.now()) + Math.random().toString(16).slice(2),
+        date,
+        a, k: Number(k.toFixed(2)), b,
+        miPct: Number(miPct.toFixed(2)),
+        total: Number(total.toFixed(2))
+      });
+
+      await persist();
+      renderList();
+      updateMonthTotals();
+      setStatus("Guardado ✓");
+    });
+
+    $("clear").addEventListener("click", () => {
+      $("a").value = "0";
+      $("k").value = "0";
+      $("b").value = "0";
+      calc();
+      $("a").focus();
+    });
+
+    $("copy").addEventListener("click", async () => {
+      const t = $("total").textContent || "";
+      try {
+        await navigator.clipboard.writeText(t);
+        setStatus("Copiado ✓");
+      } catch {
+        prompt("Copiá el total:", t);
+      }
+    });
+
+    $("mes").addEventListener("change", updateMonthTotals);
+
+    $("calibPreview").addEventListener("click", () => {
+      $("calibOut").textContent = previewCalibration();
+    });
+    $("calibApply").addEventListener("click", applyCalibration);
+
+    // live calc
+    ["a","b","miPct"].forEach(id => {
+      $(id).addEventListener("input", calc);
+      $(id).addEventListener("change", calc);
+    });
+    $("k").addEventListener("input", calc);
+    $("k").addEventListener("change", calc);
+
+    // init
+    $("fecha").value = todayISO();
+    $("mes").value = monthISO();
+    setStatus("Bloqueado");
+    renderList();
+    updateAvgPill();
+    updateMonthTotals();
+    calc();
+
+    // if there are saved data -> ask password
+    if (localStorage.getItem(STORE_KEY)) showModal();
+  </script>
+</body>
+</html>
